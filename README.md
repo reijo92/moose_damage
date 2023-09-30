@@ -1,1 +1,1 @@
-# moose_damage
+# Spatial analysis off moose forest damage in coastal ostrobothnia
