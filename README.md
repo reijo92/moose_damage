@@ -19,6 +19,7 @@ https://www.r-inla.org/
 
 ### BOOKS
 https://www.r-inla.org/learnmore/books
+https://onlinelibrary.wiley.com/doi/book/10.1002/9781118950203
 
 ### Priors
 https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#sec:pcpriors
