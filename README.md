@@ -12,23 +12,34 @@ Then follow the steps:
 4. Run `model_selection.R`.
 5. Run `inla_modeling.R`.
 
-### Useful links
+## Useful links
 
-https://inlatools.netlify.app/articles/distribution.html
+### R-INLA Website
+https://www.r-inla.org/
+
+### BOOKS
+https://www.r-inla.org/learnmore/books
+
+### Priors
 https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#sec:pcpriors
+
+### Sensitivity analysis of priors
 https://www.frontiersin.org/articles/10.3389/fpsyg.2020.608045/full
 
-Bayes factors
-https://groups.google.com/g/r-inla-discussion-group/c/1Zs00DttjEE
-
+### Bayes factor paper
 https://www.stat.cmu.edu/~kass/papers/bayesfactors.pdf
 
+### BYM R-INLA documentation
 https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
-https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
+
+### TUTORIALS
 https://ourcodingclub.github.io/tutorials/inla/
 https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/
+https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
+### OTHER
+https://inlatools.netlify.app/articles/distribution.html
 
 
 
