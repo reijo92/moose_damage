@@ -17,14 +17,12 @@ Then follow the steps:
 https://inlatools.netlify.app/articles/distribution.html
 https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#sec:pcpriors
 https://www.frontiersin.org/articles/10.3389/fpsyg.2020.608045/full
-file:///C:/Users/reijo_nz2jow8/Downloads/Prior-distributions-for-variance-parameters-in-hierarchical-models-Comment-on-Article-by-Browne-and-DraperBayesian-Analysis.pdf
 
-# Bayes factors
+Bayes factors
 https://groups.google.com/g/r-inla-discussion-group/c/1Zs00DttjEE
 
 https://www.stat.cmu.edu/~kass/papers/bayesfactors.pdf
 
-# plot the marginal distributions
 https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
