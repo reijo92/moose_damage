@@ -67,19 +67,6 @@ freq_data <- df
 #(noise term)
 #second argument is for the spatially structured effect "u"
 
-prior.list.old = list(
-  
-  prior1 = list(prec.unstruct = list(prior = "loggamma", param = c(1, 0.001)),
-                 prec.spatial = list(prior = "loggamma", param = c(1, 0.001))),
-  
-  prior2 = list(prec.unstruct = list(prior = "loggamma", param = c(2, 0.001)),
-                      prec.spatial = list(prior = "loggamma", param = c(2, 0.001))),
-  
-  prior3 = list(prec.unstruct = list(prior = "loggamma", param = c(1, 0.01)),
-                      prec.spatial = list(prior = "loggamma", param = c(1, 0.01)))
-  
-  )
-
 # give prior.list function as many shape and rate parameters inside a list
 # as number of different priors. if no arguments are given, then the function
 # makes prior list for the bym model parameters with shape = 1 and rate = 0.001
@@ -202,20 +189,22 @@ proportion_of_variance(zinb2)
 
 ### PLOTS #####################################################################
 # use the "data" that is data frame with sf geometry column
+# these plots are plotted with and without Finland map on purpose as an 
+# example
 
 # original damage map with finland map in the background
-p1 <- damage_plot(zinb2, data, finland_map = TRUE)
+p1 <- damage_plot(data, zinb2, finland_map = TRUE)
 
 # fitted map without finland map
-p2 <- damage_plot(zinb2, data, fitted = TRUE)
+p2 <- damage_plot(data, zinb2, fitted = TRUE)
 
 grid.arrange(p1,p2, ncol=1)
 
 # spatial plot of zeta = exp(u + v)
-g1 <- spatial_plot(zinb2, data, finland_map = TRUE)
+g1 <- spatial_plot(data, zinb2, finland_map = TRUE)
 
 # spatial standard deviation plot 
-g2 <- spatial_sd_plot(zinb2, data)
+g2 <- spatial_sd_plot(data, zinb2)
 
 grid.arrange(g1,g2, ncol=1)
 

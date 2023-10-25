@@ -1,4 +1,4 @@
-spatial_plot <- function(model, data, finland_map = FALSE) {
+spatial_plot <- function(data, model, finland_map = FALSE) {
   # this function collects the spatial random effects of the bym model, 
   # transforms them to natural scale and plots the effect of zeta = exp(u+v)
   

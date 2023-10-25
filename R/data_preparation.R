@@ -5,6 +5,8 @@ library(sf)
 library(tidyverse)
 library(sp)
 library(tidyr)
+library(spdep)
+library(INLA)
 
 # Loading data
 # define your data path (empty string if the data is in the code folder)

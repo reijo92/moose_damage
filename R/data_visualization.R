@@ -19,7 +19,6 @@ source("functions/hist_func.R")
 
 ## Load the data
 # define your data path (empty string if the data is in the code folder)
-path <- "C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/"
 path <- ""
 
 data <- readRDS(paste0(path, "data.rds"))

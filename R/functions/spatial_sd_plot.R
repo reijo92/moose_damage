@@ -1,4 +1,7 @@
-spatial_sd_plot <- function(model, data, finland_map = FALSE) {
+spatial_sd_plot <- function(data, model, finland_map = FALSE) {
+  
+  #this function plots the standard devation of the bym spatial random
+  #effect
   
   g <- ggplot()
   th <- theme()
