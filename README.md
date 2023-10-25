@@ -40,8 +40,8 @@ https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/<br>
 https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
 ### OTHER
-https://inlatools.netlify.app/articles/distribution.html
-
+https://inlatools.netlify.app/articles/distribution.html<br>
+https://haakonbakkagit.github.io/aboutme.html
 
 
 
