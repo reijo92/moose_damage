@@ -30,8 +30,7 @@ glimpse(freq_data)
 
 # STANDARDIZATION ############################################################
 
-
-X <- data %>% dplyr::select(!c(ID,DAMAGE,LON,LAT,AREA)) %>% st_drop_geometry()
+X <- freq_data %>% dplyr::select(!c(ID,DAMAGE,LON,LAT,AREA)) %>% st_drop_geometry()
 
 # collect original mean and sd of the coefficients for unscaling the results
 x_mean <- apply(X, 2, mean)
