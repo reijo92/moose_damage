@@ -18,7 +18,7 @@ Then follow the steps:
 https://www.r-inla.org/
 
 ### BOOKS
-https://www.r-inla.org/learnmore/books
+https://www.r-inla.org/learnmore/books<br>
 https://onlinelibrary.wiley.com/doi/book/10.1002/9781118950203
 
 ### Priors
