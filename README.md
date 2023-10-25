@@ -35,8 +35,8 @@ https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 
 
 ### TUTORIALS
-https://ourcodingclub.github.io/tutorials/inla/
-https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/
+https://ourcodingclub.github.io/tutorials/inla/<br>
+https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/<br>
 https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
 ### OTHER
