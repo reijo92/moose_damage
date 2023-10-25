@@ -1,0 +1,252 @@
+---
+title: "Moose Forest Damages - Data visualization"
+author: "Reijo Leinonen"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading data
+
+```{r}
+library(sf)
+# Moose damage data by grid
+damages <- read.csv("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Gridvahinkoja.csv", header = TRUE)
+moose_density <- read.csv("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/moose_density.csv", header = TRUE)
+# year data by damage count
+years <- read.table("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Vahingotvuositt_gridmanner.txt",header=T,sep=",")
+# road length data
+roads <- read.csv("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Tiepituuspergricell.csv", header = TRUE)
+# environment variable data
+environment <- read.csv("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/MLVMIareaingridcells.csv", header = TRUE)
+# read moose economy name and Finland borders
+borders <- st_read("C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/HTA_MAA",  "HTA_Luke_2016", options = "ENCODING=WINDOWS-1252")
+```
+```{r}
+library(dplyr)
+moose_density <- moose_density %>% rename(ID = X)
+mean_density <- apply(moose_density[,4:9],1,mean)
+density <- data.frame(ID=moose_density$ID, LAT=moose_density$POINT_Y,LON=moose_density$POINT_X,DENSITY=mean_density)
+data.frame(moose_density,Mean_density = density$DENSITY)
+```
+
+# Data cleaning
+
+## Remove not needed variables
+
+```{r}
+damages <- damages[,c(4,10,13,14)]
+years <- years[,c(5,6,8,24,25)]
+colnames(damages) <- c("ID", "DAMAGE","LON","LAT")
+colnames(years) <- c("LAT", "LON","YEAR","DAMAGE","ID")
+LON <- damages$LON
+LAT <- damages$LAT
+# remove unnecessary columns
+borders <- borders[,c(2)]
+colnames(borders) <- c("AREA","geometry")
+str(damages)
+str(years)
+```
+```{r}
+# OPENMIN: Open, mineral soil, totm3 <= 4
+# OPENPEAT: Open peatlands, totm3 <= 4 and classes 35411 and 35421 of the Topographic Database
+# PINEPLAMIN: Pine seedlings 5-48 m3/ha, mineral soil, pine proportion >= 60% of the total volume
+# PINEPLAPEATND: Pine seedlings 5-48 m3/ha, peatland, pine proportion >= 60% of the total volume, un-drained
+# PINEPLAPEATDR: Pine seedlings 5-48 m3/ha, peatland, pine proportion >= 60% of the total volume, drained
+# OTHERPLANT: Other stands 5-48 m3/ha, mineral and peatland, drained and un-drained in the same area
+# PINETHIMIN: Young productive forests 49-104 m3/ha, mineral soil, pine proportion >= 60%
+# PINETHIPEATND: Young productive forests 49-104 m3/ha, peatland, pine proportion >= 60%, un-drained
+# PINETHINPEATDR: Young productive forests 49-104 m3/ha, peatland, pine proportion >= 60%, drained
+# OTHERTHI: Other young productive forests 49-104 m3/ha, mineral and peatland, drained and un-drained in the same area
+# MATURE: Mature and over-mature productive forests > 104 m3/ha, mineral and peatland, drained and un-drained in the same area
+# WATER: Waters
+# INHABITED: Settlements
+# AGRI: Fields
+# MANMADE: All other human-modified areas, including roads, peat production areas, etc.
+# MAINROAD: Motorways and main roads 
+# REGROAD: Regional roads 
+# CONNROAD: Connecting roads 
+# FORROAD: Forestry roads 
+# OTHERROAD: Other roads (such as field roads)
+# DENSITY: moose density mean over the years 2016-2021
+# FORESTSUM:    Sum of all types of forests ("OPENMIN" + "OPENPEAT" + "PINEPLAMIN" +  "PINEPLAPEATND" + "PINEPLAPEATDR" + "OTHERPLANT" + "PINETHIMIN" + "PINETHIPEATND" + "PINETHINPEATDR" + "OTHERTHI" + "MATURE")
+# MANMADESUM:   Sum of man-made habitats ("INHABITED" + "AGRI" + "MANMADE")
+# THINNSUM:     Sum of thinning forests ("PINETHIMIN" + "PINETHIPEATND" + "PINETHINPEATDR" + "OTHERTHI")
+# THINNPEATSUM: Sum of plantations ("PINEPLAMIN" + "PINEPLAPEATND" + "PINEPLAPEATDR" + "OTHERPLANT")
+# PLANTPEATSUM: Sum of thinning forest on peatlands ("PINETHIPEATND" + "PINETHINPEATDR")
+# PLANTSUM:     Sum of plantation forest on peatlands ("PINEPLAPEATND" + "PINEPLAPEATDR")
+# PINEMINSUM:   Sum of Pine on mineral soil ("PINEPLAMIN" + "PINETHIMIN")
+# PINEPEATSUM:  Sum of Pine on peatlands ("PINEPLAPEATND" + "PINEPLAPEATDR" + "PINETHIPEATND" + "PINETHINPEATDR")
+# PINEDRSUM:    Sum of pine on drained peatlands (PINEPLAPEATDR + PINETHINPEATDR)
+# PINENDSUM:    Sum of pine on un-drained peatlands (PINEPLAPEATND + PINETHIPEATND)
+# ROADSUM:      Sum of road types ("MAINROAD" + "REGROAD" + "CONNROAD" + "FORROAD" + "OTHERROAD")
+```
+
+```{r}
+# Rename the columns
+roads <- roads[,2:7] %>%
+  rename(ID = GridID,
+         MAINROAD = Tieluokka1,
+         REGROAD = Tieluokka2,
+         CONNROAD = Tieluokka3,
+         FORROAD = Tieluokka4,
+         OTHERROAD = Tieluokka5)
+
+```
+
+```{r}
+environment <- environment[,2:17] %>%
+  rename( ID = GRIDID,
+          OPENMIN = VALUE_1,
+          OPENPEAT = VALUE_2,
+          PIPLMIN = VALUE_3,
+          PIPLPEND = VALUE_4,
+          PIPLPEDR = VALUE_5,
+          OTHERPLANT = VALUE_6,
+          PITHIMIN = VALUE_7,
+          PITHIPEND = VALUE_8,
+          PITHIPEDR = VALUE_9,
+          OTHERTHI = VALUE_10,
+          MATURE = VALUE_11,
+          WATER = VALUE_12,
+          INHABITED = VALUE_13,
+          AGRI = VALUE_14,
+          MANMADE = VALUE_15)
+
+```
+
+
+## Add other explanatory variables to damages data frame
+
+```{r}
+
+# merge data frames by id
+damages <- merge(damages, environment, by = "ID", all = TRUE)
+damages <- merge(damages, roads, by = "ID", all = TRUE)
+damages <- merge(damages, density[,c(1,4)], by = "ID", all = TRUE)
+
+```
+
+
+## Add moose management area names to data
+
+
+```{r}
+damages_sf <- st_as_sf(damages,coords = c("LON","LAT"), crs=25835)
+damages_sf <- st_transform(damages_sf, st_crs(borders))
+damages_sf$LON <- damages$LON
+damages_sf$LAT <- damages$LAT
+```
+
+```{r warning=FALSE}
+# add area names
+damages_sf <- st_join(damages_sf, borders, join = st_within, largest = TRUE)
+# factorize areas
+damages_sf$AREA <- as.factor(damages_sf$AREA) 
+# change the name of the df
+data <- damages_sf
+```
+
+## Remove data from other than main areas
+
+```{r}
+areas <- c("Rannikko-Pohjanmaa - Pohjanmaa 1", "Rannikko-Pohjanmaa - Pohjanmaa 2", "Rannikko-Pohjanmaa - Pohjanmaa 3", "Oulu 5")
+data <- data %>% filter(AREA %in% areas)
+# make new ID column
+data <- data %>% mutate(ID=1:length(ID))
+unique(data$AREA)
+dim(data)
+```
+
+
+## Convert points to polygons
+
+```{r warning=FALSE}
+library(sp)
+source("make_squares.R")
+# use data points as centroids of the polygons
+centroids <- data.frame(id=data$ID,lon=data$LON,lat=data$LAT)
+# make polygons from the centroids
+squares <- make_squares(centroids)
+(data <- data %>% st_drop_geometry() %>% cbind(squares) %>% st_as_sf() %>% st_transform(st_crs(borders)))
+```
+
+## Construct sum variables
+
+```{r}
+# rename abbreviated column names
+colnames(data) <-  c("ID", "DAMAGE", "OPENMIN", "OPENPEAT", "PINEPLAMIN", "PINEPLAPEATND", "PINEPLAPEATDR", "OTHERPLANT", "PINETHIMIN", "PINETHIPEATND", "PINETHIPEATDR", "OTHERTHI", "MATURE", "WATER", "INHABITED", "AGRI", "MANMADE", "MAINROAD", "REGROAD", "CONNROAD", "FORROAD", "OTHERROAD", "DENSITY", "LON", "LAT", "AREA", "geometry")
+```
+
+```{r}
+names(data)
+```
+
+```{r }
+# Sum of all types of forests 
+forests <- data[5:13] %>% st_drop_geometry()
+
+# Effect of man-made habitats 
+manmade <- data[15:17] %>% st_drop_geometry()
+
+# Effect of tree species in plantations 
+plant <- data[5:8] %>% st_drop_geometry()
+
+pineplant <- data[5:7] %>% st_drop_geometry()
+
+# Effect of plantation forest on peatlands 
+plantpeat <- data[c(6,7)] %>% st_drop_geometry()
+
+# Effect of forest  development classes in forestry land 
+thinn <- data[9:12] %>% st_drop_geometry()
+
+pinethinn <- data[9:11] %>% st_drop_geometry()
+
+# Effect of thinning forest on peatlands 
+thinnpeat <- data[c(10,11)] %>% st_drop_geometry()
+
+# Pine on peatlands 
+pinepeat <- data[c(6,7,10,11)] %>% st_drop_geometry()
+
+# effect of drainage in pine dominated younger development classes  on peatlands
+pinedr <- data[c(7,11)] %>% st_drop_geometry()
+
+pinend <- data[c(6,10)] %>% st_drop_geometry()
+
+# Pine on mineral soil 
+pinemin <- data[c(5,9)] %>% st_drop_geometry()
+
+# Effect of road types 
+road <- data[18:22] %>% st_drop_geometry()
+
+```
+
+
+## Calculate damage count sums in every cell by year
+
+```{r}
+
+yearGridSum <- years %>% group_by(YEAR,ID) %>% 
+  summarise(DAMAGESUM=sum(DAMAGE))
+
+```
+
+## Save the data frames
+
+```{r}
+saveRDS(data, "C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Data_Frames/data.rds")
+saveRDS(data.na, "C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Data_Frames/data_na.rds")
+saveRDS(borders, "C:/Users/reijo/Desktop/yliopisto/master_thesis/moose_forest_damages/data/Data_Frames/borders.rds")
+```
+
+
+```{r eval = FALSE, echo = FALSE}
+cat("\014")  # ctrl+L
+rm(list = ls(), envir = globalenv())
+```
+
+
