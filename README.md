@@ -12,14 +12,18 @@ Then follow the steps:
 4. Run `model_selection.R`.
 5. Run `inla_modeling.R`.
 
-## Useful links
+## LINKS
+
+Some links related to R-INLA. More tutorials, books, etc. can be found from the R-INLA official website. 
 
 ### R-INLA Website
 https://www.r-inla.org/
 
-### BOOKS
+### Books
 https://www.r-inla.org/learnmore/books<br>
-https://onlinelibrary.wiley.com/doi/book/10.1002/9781118950203
+https://onlinelibrary.wiley.com/doi/book/10.1002/9781118950203<br>
+[https://www.paulamoraga.com/book-geospatial/sec-inla.html](https://www.paulamoraga.com/book-geospatial/index.html)<br>
+https://becarioprecario.bitbucket.io/inla-gitbook/index.html
 
 ### Priors
 https://becarioprecario.bitbucket.io/inla-gitbook/ch-priors.html#sec:pcpriors
@@ -30,18 +34,24 @@ https://www.frontiersin.org/articles/10.3389/fpsyg.2020.608045/full
 ### Bayes factor paper
 https://www.stat.cmu.edu/~kass/papers/bayesfactors.pdf
 
+### Backward model selection
+https://hastie.su.domains/Papers/ESLII.pdf
+
 ### BYM R-INLA documentation
 https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 
 
-### TUTORIALS
+### Tutorials
 https://ourcodingclub.github.io/tutorials/inla/<br>
 https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/<br>
-https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
-### OTHER
+### R-INLA discussion group
+https://groups.google.com/g/r-inla-discussion-group?pli=1
+
+
+### Other
 https://inlatools.netlify.app/articles/distribution.html<br>
-https://haakonbakkagit.github.io/aboutme.html
+https://haakonbakkagit.github.io/index.html
 
 
 
