@@ -34,6 +34,9 @@ https://www.frontiersin.org/articles/10.3389/fpsyg.2020.608045/full
 ### Bayes factor paper
 https://www.stat.cmu.edu/~kass/papers/bayesfactors.pdf
 
+### Backward model selection
+https://hastie.su.domains/Papers/ESLII.pdf
+
 ### BYM R-INLA documentation
 https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 
