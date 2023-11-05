@@ -22,6 +22,8 @@ covar <- df %>%
 #collect the adjacency matrix object to a variable
 adj.mat <- paste(getwd(), "/Lattice.graph", sep="")
 
+###############################################################################
+### RUN BACKWARD MODEL SELECTION ##############################################
 
 #model without spatial random effect
 for (i in 1:10) {
@@ -44,13 +46,6 @@ for (i in 1:10) {
   saveRDS(res, paste0("models/nbin_model",i ,".rds"))
 }
 
-mod_names <- paste("nbin_model", 1:10, ".rds", sep = "")
-path <- file.path(getwd(), "models")
-
-nbin_mods <- lapply(mod_names, function(file) {
-  file_path <- file.path(path, file)
-  readRDS(file_path)
-})
 
 for (i in 1:10) {
   res_spatial<-backward_modsel(covar,   
@@ -71,27 +66,25 @@ for (i in 1:10) {
   saveRDS(res_spatial, paste0("models/nbin_model_spatial",i ,".rds"))
 }
 
+###############################################################################
+### LOAD THE SAVED MODEL SELECTION RESULTS ####################################
 
-mod_names_spat <- paste("nbin_model_spatial", 1:10, ".rds", sep = "")
+# load the regular INLA Negative Binomial backward model selection results
+mod_names <- paste("nbin_model", 1:10, ".rds", sep = "")
 path <- file.path(getwd(), "models")
+
+nbin_mods <- lapply(mod_names, function(file) {
+  file_path <- file.path(path, file)
+  readRDS(file_path)
+})
+
+# load the INLA spatial Negative Binomial backward model selection results
+mod_names_spat <- paste("nbin_model_spatial", 1:10, ".rds", sep = "")
 
 nbin_mods_spat <- lapply(mod_names_spat, function(file) {
   file_path <- file.path(path, file)
   readRDS(file_path)
 })
 
-
-
-# regular mod
-names <- c("OTHERPLANT", "PINETHIPEATDR",        "MATURE",       "DENSITY" )
-mlik <- c(-952.3712)
-
-max_mlik <- max(mlik)
-
-# spatial_mod
-names2 <- c("OPENPEAT", "PINETHIMIN",      "WATER",  "INHABITED",       "AGRI",    "DENSITY" )
-mlik2 <- c(-529.0390)
-
-log_bf <- 2*(mlik2-mlik)
-log_bf
-#846.6644 > 150 = very strong evidence
+nbin_mods[[1]]
+nbin_mods_spat[[1]]
