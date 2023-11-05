@@ -41,7 +41,7 @@ https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
 ### Other
 https://inlatools.netlify.app/articles/distribution.html<br>
-[https://haakonbakkagit.github.io/aboutme.html](https://haakonbakkagit.github.io/index.html)https://haakonbakkagit.github.io/index.html
+https://haakonbakkagit.github.io/index.html
 
 
 
