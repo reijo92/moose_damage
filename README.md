@@ -12,12 +12,12 @@ Then follow the steps:
 4. Run `model_selection.R`.
 5. Run `inla_modeling.R`.
 
-## Useful links
+## LINKS
 
 ### R-INLA Website
 https://www.r-inla.org/
 
-### BOOKS
+### Books
 https://www.r-inla.org/learnmore/books<br>
 https://onlinelibrary.wiley.com/doi/book/10.1002/9781118950203
 
@@ -34,12 +34,12 @@ https://www.stat.cmu.edu/~kass/papers/bayesfactors.pdf
 https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 
 
-### TUTORIALS
+### Tutorials
 https://ourcodingclub.github.io/tutorials/inla/<br>
 https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/<br>
 https://www.paulamoraga.com/book-geospatial/sec-inla.html
 
-### OTHER
+### Other
 https://inlatools.netlify.app/articles/distribution.html<br>
 https://haakonbakkagit.github.io/aboutme.html
 
