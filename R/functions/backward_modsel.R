@@ -1,12 +1,17 @@
-backward_modsel_log <- function(covar, 
+backward_modsel <- function(covar, 
                                 spatial_model = FALSE, 
                                 family, 
                                 data, 
                                 graph = NULL, 
                                 prior_mean_fixed = 0, 
-                                prior_prec_fixed = 0.001){
+                                prior_prec_fixed = 0.001,
+                                return_all = TRUE){
   # This is a model selection function that implements backward model selection
-  # using R-INLA
+  # using R-INLA. 
+  # return_all has options TRUE or FALSE . if return_all = TRUE, then function
+  # returns all the models
+  # if return_all = FALSE, then only the final model will be returned
+  
   require(INLA); require(ggplot2); require(magrittr); require(tidyverse)
   source("functions/make_prior_list.R") 
   source("functions/inla_formula.R") 
@@ -223,7 +228,14 @@ backward_modsel_log <- function(covar,
   final.model <- best.mod
   print(paste0("Final model: "))
   print(final.model)
-  #ALLMLList contains marginal likelihoods and variable names
-  return(AllMLList)
+  # collect best model with the associated marginal likelihood
+  best_mod <- list(final.model, MLList[[1]])
+  if (return_all) {
+    #ALLMLList contains marginal likelihoods and variable names
+    return(list(AllMLList, best_mod))
+  } 
+  else {
+    return(best_mod)
+  }
 }
 

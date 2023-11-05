@@ -172,3 +172,4 @@ H <- inla.read.graph(filename="Lattice.graph")
 image(inla.graph2matrix(H),xlab="",ylab="")
 
 ############################################################################
+

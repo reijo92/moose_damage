@@ -22,40 +22,76 @@ covar <- df %>%
 #collect the adjacency matrix object to a variable
 adj.mat <- paste(getwd(), "/Lattice.graph", sep="")
 
-res_list <- list()
 
 #model without spatial random effect
-res<-backward_modsel_log(covar, 
-                         family = "nbinomial", 
-                         data = df,
-                         spatial_model = FALSE)
-
-for (i in 1:1) {
-  res_spatial<-backward_modsel_log(covar,  
-                                   spatial_model = TRUE, 
-                                   family = "nbinomial",  
-                                   data = df
-                           )
-  res_list[[i]] <- res_spatial
+for (i in 1:10) {
+  res<-backward_modsel(covar, 
+                           family = "nbinomial", 
+                           data = df,
+                           spatial_model = FALSE,
+                           return_all = FALSE) 
+  # use return_all argument to only return the best model without other 
+  # models
+  
+  #check that models folder exists
+  path <- file.path(getwd(), "models")
+  # Check if the folder exists, and if not, create it
+  if (!file.exists(path)) {
+    dir.create(path)
+    cat("Folder created:", path, "\n")
+  }
+  #SAVE MODEL
+  saveRDS(res, paste0("models/nbin_model",i ,".rds"))
 }
+
+mod_names <- paste("nbin_model", 1:10, ".rds", sep = "")
+path <- file.path(getwd(), "models")
+
+nbin_mods <- lapply(mod_names, function(file) {
+  file_path <- file.path(path, file)
+  readRDS(file_path)
+})
+
+for (i in 1:10) {
+  res_spatial<-backward_modsel(covar,   
+                               spatial_model = TRUE,  
+                               family = "nbinomial",   
+                               data = df, 
+                               return_all =FALSE
+                           )
+  
+  #check that models folder exists
+  path <- file.path(getwd(), "models")
+  # Check if the folder exists, and if not, create it
+  if (!file.exists(path)) {
+    dir.create(path)
+    cat("Folder created:", path, "\n")
+  }
+  #SAVE MODEL
+  saveRDS(res_spatial, paste0("models/nbin_model_spatial",i ,".rds"))
+}
+
+
+mod_names_spat <- paste("nbin_model_spatial", 1:10, ".rds", sep = "")
+path <- file.path(getwd(), "models")
+
+nbin_mods_spat <- lapply(mod_names_spat, function(file) {
+  file_path <- file.path(path, file)
+  readRDS(file_path)
+})
+
 
 
 # regular mod
 names <- c("OTHERPLANT", "PINETHIPEATDR",        "MATURE",       "DENSITY" )
-mlik <- c(-955.8871,     -973.6269,     -952.3712,     -959.4444 )
+mlik <- c(-952.3712)
 
 max_mlik <- max(mlik)
 
 # spatial_mod
 names2 <- c("OPENPEAT", "PINETHIMIN",      "WATER",  "INHABITED",       "AGRI",    "DENSITY" )
-mlik2 <- c(-572.5017,  -557.8849,  -544.2926,  -529.0390,  -546.2804,  -530.5564 )
+mlik2 <- c(-529.0390)
 
-
-max_mlik2 <- max(mlik2)
-
-#best log marginal likelihoods
-max_mlik ; max_mlik2
-
-log_bf <- 2*(max_mlik2-max_mlik)
+log_bf <- 2*(mlik2-mlik)
 log_bf
 #846.6644 > 150 = very strong evidence

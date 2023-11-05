@@ -2,6 +2,12 @@ make_prior_list <- function(prior_num = 1,
                             prior_dist = "loggamma", 
                             shape = list(1), 
                             rate = list(0.001) ) {
+  # this function makes the INLA prior list. prior_num parameter controls
+  # how many priors the list contains.
+  # prec.unstruct = defines prior for the Gaussian iid noise parameter
+  #                 "v" in the BYM model
+  # prec.spatial = defines prior for the spatially structured effect "u"
+  #                in the BYM model
   
   prior.list <- list()
   

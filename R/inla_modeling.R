@@ -30,6 +30,7 @@ glimpse(freq_data)
 
 # STANDARDIZATION ############################################################
 
+
 X <- freq_data %>% dplyr::select(!c(ID,DAMAGE,LON,LAT,AREA)) %>% st_drop_geometry()
 
 # collect original mean and sd of the coefficients for unscaling the results
@@ -80,7 +81,10 @@ prior.list <- make_prior_list(prior_num = 2,
 adj.mat <- paste(getwd(), "/Lattice.graph", sep="")
 
 #covariates selected by backward model selection
-cov <- c("PINETHIPEATDR", "MATURE", "DENSITY")
+cov <- c("OTHERPLANT", "PINETHIPEATDR", "MATURE", "DENSITY")
+#spatial model
+#spatial_cov <- c("MATURE", "PINETHIPEATDR", "DENSITY")
+spatial_cov <- c("OPENPEAT", "PINETHIMIN", "WATER", "INHABITED", "AGRI", "DENSITY" )
 
 # MODEL FITTING
 # Notice uninformative priors for the fixed effects. Priors for the fixed 
@@ -96,7 +100,7 @@ zinb <- fit_inla(data = freq_data,
                  model = "nbinomial")
 
 # spatial model with 1. prior
-f2 <- inla_formula(cov, prior.list[[1]])
+f2 <- inla_formula(spatial_cov, prior.list[[1]])
 zinb2 <- fit_inla(data = freq_data, 
                 formula = f2, 
                 model = "nbinomial",
@@ -113,37 +117,49 @@ zinb2 <- fit_inla(data = freq_data,
 ###############################################################################
 # SUMMARIES ###################################################################
 
+round(zinb$summary.fixed, 3)
+round(zinb$summary.hyperpar, 3)
+zinb$mlik[1,]
 
 round(zinb2$summary.fixed, 3)
 round(zinb2$summary.hyperpar, 3)
+zinb2$mlik[1,]
 
 ###############################################################################
+# NOTE! This section assumes the model is spatial model, so if fitting
+# regular INLA model, then don't run sections that assume the model is using
+# spatial random effects. Those sections are 
+# porpotion of variance and 2 spatial plots
+#
 
 # MARGINAL TRANSFORMS ##########################################################
 
 # Transform the fixed value marginals to natural scale (exp transform)
-int.marg <-marginal_transform("(Intercept)", zinb2)
-mature.marg <-marginal_transform("MATURE", zinb2)
-pinethi.marg <-marginal_transform("PINETHIPEATDR", zinb2)
-density.marg <-marginal_transform("DENSITY", zinb2)
+marginal.list <- list()
+summ.list <- list()
+#posterior marginal of the intercept
+int.marg <- marginal_transform("(Intercept)", zinb2)
+marginal.list[[1]] <- int.marg
+n <- length(spatial_cov)
+
+#posterior marginals of the covariates 
+for (i in 1:n) {
+  marg <-marginal_transform(spatial_cov[i], zinb2)
+  marginal.list[[i+1]] <- marg
+}
 
 ###############################################################################
 
-# calculate the means of transformed marginals
 int.summ <- inla.zmarginal(int.marg)
-mature.summ <- inla.zmarginal(mature.marg)
-pinethi.summ <- inla.zmarginal(pinethi.marg)
-density.summ <- inla.zmarginal(density.marg)
+summ.list[[1]] <- int.summ
 
-summ_list <- list(int.summ,
-                  mature.summ,
-                  pinethi.summ,
-                  density.summ)
+for (i in 1:n) {
+  summ <- inla.zmarginal(marginal.list[[i+1]])
+  summ.list[[i+1]] <- summ
+}
 
-# collect fixed effect names for the summary table
-var_names <- zinb2$names.fixed
 # make summary table of the transformed results
-summdf <- inla_summary(summ_list, var_names)
+summdf <- inla_summary(summ.list, c("Intercept", spatial_cov))
 summdf          
           
 
@@ -200,7 +216,7 @@ p2 <- damage_plot(data, zinb2, fitted = TRUE)
 grid.arrange(p1,p2, ncol=1)
 
 # spatial plot of zeta = exp(u + v)
-g1 <- spatial_plot(data, zinb2, finland_map = TRUE)
+g1 <- spatial_plot(data, zinb2)
 
 # spatial standard deviation plot 
 g2 <- spatial_sd_plot(data, zinb2)
