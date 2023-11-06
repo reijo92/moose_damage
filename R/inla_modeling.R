@@ -92,8 +92,6 @@ spatial_cov <- c("OPENPEAT", "PINETHIMIN", "WATER", "INHABITED", "AGRI", "DENSIT
 
 # The function inla_formula can be used only for the "bym" model
 
-mod.list <- list()
-
 f <- inla_formula(cov)
 zinb <- fit_inla(data = freq_data, 
                  formula = f, 
