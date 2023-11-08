@@ -93,13 +93,13 @@ spatial_cov <- c("OPENPEAT", "PINETHIMIN", "WATER", "INHABITED", "AGRI", "DENSIT
 # The function inla_formula can be used only for the "bym" model
 
 f <- inla_formula(cov)
-zinb <- fit_inla(data = freq_data, 
+nb <- fit_inla(data = freq_data, 
                  formula = f, 
                  model = "nbinomial")
 
 # spatial model with 1. prior
 f2 <- inla_formula(spatial_cov, prior.list[[1]])
-zinb2 <- fit_inla(data = freq_data, 
+nb2 <- fit_inla(data = freq_data, 
                 formula = f2, 
                 model = "nbinomial",
                 spatial = TRUE)
@@ -115,13 +115,13 @@ zinb2 <- fit_inla(data = freq_data,
 ###############################################################################
 # SUMMARIES ###################################################################
 
-round(zinb$summary.fixed, 3)
-round(zinb$summary.hyperpar, 3)
-zinb$mlik[1,]
+round(nb$summary.fixed, 3)
+round(nb$summary.hyperpar, 3)
+nb$mlik[1,]
 
-round(zinb2$summary.fixed, 3)
-round(zinb2$summary.hyperpar, 3)
-zinb2$mlik[1,]
+round(nb2$summary.fixed, 3)
+round(nb2$summary.hyperpar, 3)
+nb2$mlik[1,]
 
 ###############################################################################
 # NOTE! This section assumes the model is spatial model, so if fitting
@@ -136,13 +136,13 @@ zinb2$mlik[1,]
 marginal.list <- list()
 summ.list <- list()
 #posterior marginal of the intercept
-int.marg <- marginal_transform("(Intercept)", zinb2)
+int.marg <- marginal_transform("(Intercept)", nb2)
 marginal.list[[1]] <- int.marg
 n <- length(spatial_cov)
 
 #posterior marginals of the covariates 
 for (i in 1:n) {
-  marg <-marginal_transform(spatial_cov[i], zinb2)
+  marg <-marginal_transform(spatial_cov[i], nb2)
   marginal.list[[i+1]] <- marg
 }
 
@@ -173,7 +173,7 @@ round(res.summ.unscaled,3 )
 # FIXED EFFECT POSTERIORS 
 
 # smoothed marginal posterior list of the fixed effects
-fixed.marginals <- collect_marginals(zinb2)
+fixed.marginals <- collect_marginals(nb2)
 
 # fixed effect plots
 plot_marginals(fixed.marginals)
@@ -181,7 +181,7 @@ plot_marginals(fixed.marginals)
 # HYPERPARAMETER POSTERIORS 
 
 # smoothed marginal posterior list of the hyperparameters
-hyperpar.marginals <- collect_marginals(zinb2, hyper = TRUE, to_sd = TRUE)
+hyperpar.marginals <- collect_marginals(nb2, hyper = TRUE, to_sd = TRUE)
 
 # assign a vector of greek letters to use for plotting the hyperparameter
 # marginal posterior plots. These are for the negative binomial models
@@ -196,7 +196,7 @@ plot_marginals(hyperpar.marginals, hyper = T, greek_letters = greek_letters)
 
 ### VARIANCE EXPLAINED BY THE SPATIALLY STRUCTURED EFFECT #####################
 
-proportion_of_variance(zinb2)
+proportion_of_variance(nb2)
 
 ###############################################################################
 
@@ -206,18 +206,18 @@ proportion_of_variance(zinb2)
 # example
 
 # original damage map with finland map in the background
-p1 <- damage_plot(data, zinb2, finland_map = TRUE)
+p1 <- damage_plot(data, nb2, finland_map = TRUE)
 
 # fitted map without finland map
-p2 <- damage_plot(data, zinb2, fitted = TRUE)
+p2 <- damage_plot(data, nb2, fitted = TRUE)
 
 grid.arrange(p1,p2, ncol=1)
 
 # spatial plot of zeta = exp(u + v)
-g1 <- spatial_plot(data, zinb2)
+g1 <- spatial_plot(data, nb2)
 
 # spatial standard deviation plot 
-g2 <- spatial_sd_plot(data, zinb2)
+g2 <- spatial_sd_plot(data, nb2)
 
 grid.arrange(g1,g2, ncol=1)
 
