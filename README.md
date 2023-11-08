@@ -44,6 +44,7 @@ https://inla.r-inla-download.org/r-inla.org/doc/latent/bym.pdf
 ### Tutorials
 https://ourcodingclub.github.io/tutorials/inla/<br>
 https://ourcodingclub.github.io/tutorials/spatial-modelling-inla/<br>
+https://liberalarts.tamu.edu/txrdc/wp-content/uploads/sites/23/2020/07/TAMU_May14_Bayes_workshop.pdf
 
 ### R-INLA discussion group
 https://groups.google.com/g/r-inla-discussion-group?pli=1
