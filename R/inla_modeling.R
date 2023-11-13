@@ -80,11 +80,11 @@ prior.list <- make_prior_list(prior_num = 2,
 #collect the adjacency matrix object to a variable
 adj.mat <- paste(getwd(), "/Lattice.graph", sep="")
 
-#covariates selected by backward model selection
 cov <- c("OTHERPLANT", "PINETHIPEATDR", "MATURE", "DENSITY")
+
 #spatial model
-#spatial_cov <- c("MATURE", "PINETHIPEATDR", "DENSITY")
-spatial_cov <- c("OPENPEAT", "PINETHIMIN", "WATER", "INHABITED", "AGRI", "DENSITY" )
+#covariates selected by backward model selection
+spatial_cov <- readRDS("models/best_cov.rds")
 
 # MODEL FITTING
 # Notice uninformative priors for the fixed effects. Priors for the fixed 
@@ -92,7 +92,8 @@ spatial_cov <- c("OPENPEAT", "PINETHIMIN", "WATER", "INHABITED", "AGRI", "DENSIT
 
 # The function inla_formula can be used only for the "bym" model
 
-f <- inla_formula(cov)
+
+f <- inla_formula(spatial_cov)
 nb <- fit_inla(data = freq_data, 
                  formula = f, 
                  model = "nbinomial")
@@ -122,6 +123,7 @@ nb$mlik[1,]
 round(nb2$summary.fixed, 3)
 round(nb2$summary.hyperpar, 3)
 nb2$mlik[1,]
+
 
 ###############################################################################
 # NOTE! This section assumes the model is spatial model, so if fitting
@@ -185,7 +187,7 @@ hyperpar.marginals <- collect_marginals(nb2, hyper = TRUE, to_sd = TRUE)
 
 # assign a vector of greek letters to use for plotting the hyperparameter
 # marginal posterior plots. These are for the negative binomial models
-# hyperparameters. ZINB model would also need the letter "pi[0]" for
+# hyperparameters. nb model would also need the letter "pi[0]" for
 # the zero-probability
 greek_letters <- c("alpha", "sigma[nu]", "sigma[u]")
 
